@@ -87,7 +87,6 @@ namespace FoundryGet.Models
             {
                 Name = Name,
                 RawVersion = Version,
-                // Version = GetSemanticVersion(),
                 ManifestUri = ManifestUri
             };
         }

@@ -15,10 +15,6 @@ namespace FoundryGet.Models
         )
         {
             var jsonValue = (string)reader.Value;
-            if (jsonValue.StartsWith("v"))
-            {
-                jsonValue = jsonValue.Substring(1);
-            }
             return new SemanticVersioning.Version(jsonValue);
         }
 
