@@ -1,6 +1,6 @@
-﻿using FoundryGet.Commands;
+﻿using System;
+using FoundryGet.Commands;
 using Microsoft.Extensions.CommandLineUtils;
-using System;
 
 namespace FoundryGet
 {
@@ -8,10 +8,7 @@ namespace FoundryGet
     {
         static void Main(string[] args)
         {
-            var app = new CommandLineApplication
-            {
-                Name = "foundryget"
-            };
+            var app = new CommandLineApplication { Name = "foundryget" };
 
             app.HelpOption("-?|-h|--help");
 

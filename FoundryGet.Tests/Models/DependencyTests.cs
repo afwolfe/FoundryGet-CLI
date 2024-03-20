@@ -7,15 +7,17 @@ namespace FoundryGet.Models.Tests
     public class DependencyTests
     {
         [Theory]
-
         [InlineData("1.0.0", "1.1.0", true)]
         [InlineData("1.0.0", "1.0.1", true)]
         [InlineData("1.0.5", "1.1.0", true)]
-
         [InlineData("1.0.0", "2.0.0", false)]
         [InlineData("1.0.0", "0.1.0", false)]
         [InlineData("1.5.0", "1.1.0", false)]
-        public void IsSatisfiedByTest(string dependencyVersion, string installedVersion, bool shouldBeSatisfied)
+        public void IsSatisfiedByTest(
+            string dependencyVersion,
+            string installedVersion,
+            bool shouldBeSatisfied
+        )
         {
             var dependency = new Dependency()
             {
@@ -33,15 +35,17 @@ namespace FoundryGet.Models.Tests
         }
 
         [Theory]
-
         [InlineData("1.0.0", "1.1.0", true)]
         [InlineData("1.0.0", "1.0.1", true)]
         [InlineData("1.0.5", "1.1.0", true)]
-
         [InlineData("1.0.0", "2.0.0", false)]
         [InlineData("1.0.0", "0.1.0", false)]
         [InlineData("1.5.0", "1.1.0", false)]
-        public void IsSatisfiedByTest1(string dependencyVersion, string installedVersion, bool shouldBeSatisfied)
+        public void IsSatisfiedByTest1(
+            string dependencyVersion,
+            string installedVersion,
+            bool shouldBeSatisfied
+        )
         {
             var dependency = new Dependency()
             {
@@ -61,7 +65,8 @@ namespace FoundryGet.Models.Tests
         [Fact]
         public void CanConvertJsonToDependency()
         {
-            var json = "{ \"name\": \"archmage\", \"manifest\": \"https://gitlab.com/asacolips-projects/foundry-mods/archmage/-/raw/1.5.0/system.json\", \"version\": \"1.5.0\" }";
+            var json =
+                "{ \"name\": \"archmage\", \"manifest\": \"https://gitlab.com/asacolips-projects/foundry-mods/archmage/-/raw/1.5.0/system.json\", \"version\": \"1.5.0\" }";
 
             Should.NotThrow(() =>
             {
@@ -69,7 +74,11 @@ namespace FoundryGet.Models.Tests
 
                 dependency.ShouldNotBeNull();
                 dependency.Name.ShouldBe("archmage");
-                dependency.ManifestUri.ShouldBe(new System.Uri("https://gitlab.com/asacolips-projects/foundry-mods/archmage/-/raw/1.5.0/system.json"));
+                dependency.ManifestUri.ShouldBe(
+                    new System.Uri(
+                        "https://gitlab.com/asacolips-projects/foundry-mods/archmage/-/raw/1.5.0/system.json"
+                    )
+                );
                 dependency.Version.ShouldBe(new SemanticVersioning.Version(1, 5, 0));
             });
         }

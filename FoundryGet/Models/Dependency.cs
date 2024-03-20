@@ -1,8 +1,8 @@
-﻿using FoundryGet.Interfaces;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using FoundryGet.Interfaces;
+using Newtonsoft.Json;
 
 namespace FoundryGet.Models
 {
@@ -26,7 +26,9 @@ namespace FoundryGet.Models
 
         public bool IsSatisfiedBy(Dependency dependency)
         {
-            return Name == dependency.Name && Version.Major == dependency.Version.Major && Version.Minor <= dependency.Version.Minor;
+            return Name == dependency.Name
+                && Version.Major == dependency.Version.Major
+                && Version.Minor <= dependency.Version.Minor;
         }
 
         public async Task<Manifest> GetFullManifest(IManifestLoader manifestLoader)

@@ -1,14 +1,8 @@
-﻿using FoundryGet.Models;
+﻿using System;
+using System.Threading.Tasks;
+using FoundryGet.Models;
 using FoundryGet.Services;
 using Microsoft.Extensions.CommandLineUtils;
-using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace FoundryGet.Commands
 {
@@ -20,7 +14,11 @@ namespace FoundryGet.Commands
             command.HelpOption("-?|-h|--help");
 
             var url = command.Argument("[url]", "The manifest URL of the module");
-            var dataFolder = command.Option("-d|--dataFolder", "The Foundry Data folder to install in, such as C:\\Users\\Me\\AppData\\Local\\FoundryVTT\\Data", CommandOptionType.SingleValue);
+            var dataFolder = command.Option(
+                "-d|--dataFolder",
+                "The Foundry Data folder to install in, such as C:\\Users\\Me\\AppData\\Local\\FoundryVTT\\Data",
+                CommandOptionType.SingleValue
+            );
 
             command.OnExecute(async () => await Execute(url, dataFolder));
         }
@@ -45,16 +43,21 @@ namespace FoundryGet.Commands
                     foundryDataFolder = FoundryDataFolder.FromCurrentDirectory();
                 }
 
-                if (foundryDataFolder == null) return 1;
+                if (foundryDataFolder == null)
+                    return 1;
 
                 var manifestLoader = new ManifestLoader();
                 await foundryDataFolder.ReadAllManifests(manifestLoader);
 
                 var manifest = await manifestLoader.FromUri(new Uri(url.Value));
-                if (manifest == null) return 1;
+                if (manifest == null)
+                    return 1;
 
                 var dependencyChain = new DependencyChain();
-                dependencyChain.AddCurrentlyInstalledDependencies(manifestLoader, foundryDataFolder);
+                dependencyChain.AddCurrentlyInstalledDependencies(
+                    manifestLoader,
+                    foundryDataFolder
+                );
                 await dependencyChain.AddDependenciesFromManifest(manifestLoader, manifest);
 
                 foreach (var dependency in dependencyChain.NeededDependencies)
@@ -72,7 +75,5 @@ namespace FoundryGet.Commands
                 return 1;
             }
         }
-
-
     }
 }

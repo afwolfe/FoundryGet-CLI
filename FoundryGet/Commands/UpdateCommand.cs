@@ -1,11 +1,10 @@
-﻿using FoundryGet.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FoundryGet.Interfaces;
 using FoundryGet.Models;
 using FoundryGet.Services;
 using Microsoft.Extensions.CommandLineUtils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FoundryGet.Commands
 {
@@ -17,7 +16,11 @@ namespace FoundryGet.Commands
             command.HelpOption("-?|-h|--help");
 
             //var url = command.Argument("[url]", "The manifest URL of the module");
-            var dataFolder = command.Option("-d|--dataFolder", "The Foundry Data folder to install in, such as C:\\Users\\Me\\AppData\\Local\\FoundryVTT\\Data", CommandOptionType.SingleValue);
+            var dataFolder = command.Option(
+                "-d|--dataFolder",
+                "The Foundry Data folder to install in, such as C:\\Users\\Me\\AppData\\Local\\FoundryVTT\\Data",
+                CommandOptionType.SingleValue
+            );
 
             command.OnExecute(async () => await Execute(dataFolder));
         }
@@ -36,7 +39,8 @@ namespace FoundryGet.Commands
                     foundryDataFolder = FoundryDataFolder.FromCurrentDirectory();
                 }
 
-                if (foundryDataFolder == null) return 1;
+                if (foundryDataFolder == null)
+                    return 1;
 
                 var manifestLoader = new ManifestLoader();
                 var manifestsToUpdate = new List<Manifest>();
@@ -46,17 +50,23 @@ namespace FoundryGet.Commands
                     Console.WriteLine();
                     Console.WriteLine($"Checking {manifest.Name} for updates");
                     var latestManifest = await GetLatestManifest(manifestLoader, manifest);
-                    if (latestManifest == null) continue;
+                    if (latestManifest == null)
+                        continue;
 
                     if (latestManifest.GetSemanticVersion() > manifest.GetSemanticVersion())
                     {
-                        Console.WriteLine($"Queuing update for {latestManifest.Name} from {manifest.GetSemanticVersion()} to {latestManifest.GetSemanticVersion()}");
+                        Console.WriteLine(
+                            $"Queuing update for {latestManifest.Name} from {manifest.GetSemanticVersion()} to {latestManifest.GetSemanticVersion()}"
+                        );
                         manifestsToUpdate.Add(latestManifest);
                     }
                 }
-                
+
                 var dependencyChain = new DependencyChain();
-                dependencyChain.AddCurrentlyInstalledDependencies(manifestLoader, foundryDataFolder);
+                dependencyChain.AddCurrentlyInstalledDependencies(
+                    manifestLoader,
+                    foundryDataFolder
+                );
 
                 foreach (var toUpdate in manifestsToUpdate)
                 {
@@ -85,8 +95,10 @@ namespace FoundryGet.Commands
             }
         }
 
-
-        private static async Task<Manifest> GetLatestManifest(IManifestLoader manifestLoader, Manifest manifest)
+        private static async Task<Manifest> GetLatestManifest(
+            IManifestLoader manifestLoader,
+            Manifest manifest
+        )
         {
             var version = manifest.GetSemanticVersion();
             if (version == null)
@@ -98,5 +110,4 @@ namespace FoundryGet.Commands
             return await manifestLoader.FromUri(manifest.ManifestUri);
         }
     }
-
 }

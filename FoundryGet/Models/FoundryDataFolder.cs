@@ -1,15 +1,15 @@
-﻿using FoundryGet.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
+using FoundryGet.Interfaces;
 
 namespace FoundryGet.Models
 {
     public class FoundryDataFolder
     {
-        private static readonly string FoundryGetModuleRelativePath = $"modules{Path.DirectorySeparatorChar}foundryget";
+        private static readonly string FoundryGetModuleRelativePath =
+            $"modules{Path.DirectorySeparatorChar}foundryget";
 
         private string Folder { get; set; }
 
@@ -23,7 +23,8 @@ namespace FoundryGet.Models
 
         public async Task<List<Manifest>> ReadAllManifests(IManifestLoader manifestLoader)
         {
-            if (ManifestsLoaded) return AllManifests;
+            if (ManifestsLoaded)
+                return AllManifests;
 
             await foreach (var manifest in ReadSystemManifests(manifestLoader))
             {
@@ -39,8 +40,13 @@ namespace FoundryGet.Models
             return AllManifests;
         }
 
-        public async IAsyncEnumerable<Manifest> ReadSystemManifests(IManifestLoader manifestLoader) {
-            var manifests = Directory.GetFiles(SystemsFolder, searchPattern: "system.json", SearchOption.AllDirectories);
+        public async IAsyncEnumerable<Manifest> ReadSystemManifests(IManifestLoader manifestLoader)
+        {
+            var manifests = Directory.GetFiles(
+                SystemsFolder,
+                searchPattern: "system.json",
+                SearchOption.AllDirectories
+            );
 
             foreach (var manifest in manifests)
             {
@@ -50,14 +56,17 @@ namespace FoundryGet.Models
 
         public async IAsyncEnumerable<Manifest> ReadModuleManifests(IManifestLoader manifestLoader)
         {
-            var manifests = Directory.GetFiles(ModulesFolder, searchPattern: "module.json", SearchOption.AllDirectories);
+            var manifests = Directory.GetFiles(
+                ModulesFolder,
+                searchPattern: "module.json",
+                SearchOption.AllDirectories
+            );
 
             foreach (var manifest in manifests)
             {
                 yield return await manifestLoader.FromFile(manifest);
             }
         }
-
 
         public static FoundryDataFolder FromCurrentDirectory()
         {
@@ -76,7 +85,9 @@ namespace FoundryGet.Models
         {
             if (!path.Contains("Data", StringComparison.Ordinal))
             {
-                Console.WriteLine($"{path} does not appear to be the Foundry /data/ folder, exitting");
+                Console.WriteLine(
+                    $"{path} does not appear to be the Foundry /data/ folder, exitting"
+                );
                 return null;
             }
 

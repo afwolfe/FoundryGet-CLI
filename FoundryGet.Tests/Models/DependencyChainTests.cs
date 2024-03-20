@@ -1,28 +1,35 @@
-﻿using FoundryGet.Interfaces;
-using Moq;
-using Shouldly;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FoundryGet.Interfaces;
+using Moq;
+using Shouldly;
 using Xunit;
 
 namespace FoundryGet.Models.Tests
 {
     public class DependencyChainTests
     {
-       
         private IManifestLoader CreateMockManifestLoader(params Manifest[] manifests)
         {
             var mockManifestLoader = new Mock<IManifestLoader>();
             foreach (var manifest in manifests)
             {
-                mockManifestLoader.Setup(x => x.FromUri(manifest.ManifestUri)).ReturnsAsync(manifest);
+                mockManifestLoader
+                    .Setup(x => x.FromUri(manifest.ManifestUri))
+                    .ReturnsAsync(manifest);
             }
             return mockManifestLoader.Object;
         }
 
-        private Manifest CreateTestManifest(string name, int major, int minor, int patch, params Manifest[] dependencies)
+        private Manifest CreateTestManifest(
+            string name,
+            int major,
+            int minor,
+            int patch,
+            params Manifest[] dependencies
+        )
         {
             var manifest = new Manifest()
             {
@@ -105,7 +112,9 @@ namespace FoundryGet.Models.Tests
             await dependencyChain.AddDependenciesFromManifest(manifestLoader, installManifestA);
 
             dependencyChain.NeededDependencies.Count.ShouldBe(1);
-            dependencyChain.NeededDependencies.First().Version.ShouldBe(dependencyManifest2.SemanticVersion);
+            dependencyChain
+                .NeededDependencies.First()
+                .Version.ShouldBe(dependencyManifest2.SemanticVersion);
         }
 
         [Fact]
@@ -124,7 +133,9 @@ namespace FoundryGet.Models.Tests
             await dependencyChain.AddDependenciesFromManifest(manifestLoader, installManifestB);
 
             dependencyChain.NeededDependencies.Count.ShouldBe(1);
-            dependencyChain.NeededDependencies.First().Version.ShouldBe(dependencyManifest2.SemanticVersion);
+            dependencyChain
+                .NeededDependencies.First()
+                .Version.ShouldBe(dependencyManifest2.SemanticVersion);
         }
 
         [Fact]
@@ -154,30 +165,68 @@ namespace FoundryGet.Models.Tests
         {
             var dependencyManifest1 = CreateTestManifest("dependency-a", 1, 0, 0);
             var dependencyManifest2 = CreateTestManifest("dependency-b", 1, 0, 0);
-            var dependencyManifest3 = CreateTestManifest("dependency-c", 1, 0, 0, dependencyManifest1);
+            var dependencyManifest3 = CreateTestManifest(
+                "dependency-c",
+                1,
+                0,
+                0,
+                dependencyManifest1
+            );
 
-            var manifestLoader = CreateMockManifestLoader(dependencyManifest1, dependencyManifest2, dependencyManifest3);
+            var manifestLoader = CreateMockManifestLoader(
+                dependencyManifest1,
+                dependencyManifest2,
+                dependencyManifest3
+            );
 
             var installManifestA = CreateTestManifest("to-install-a", 1, 0, 0, dependencyManifest1);
-            var installManifestB = CreateTestManifest("to-install-b", 1, 0, 0, dependencyManifest2, dependencyManifest3);
+            var installManifestB = CreateTestManifest(
+                "to-install-b",
+                1,
+                0,
+                0,
+                dependencyManifest2,
+                dependencyManifest3
+            );
 
             var dependencyChain = new DependencyChain();
             await dependencyChain.AddDependenciesFromManifest(manifestLoader, installManifestA);
             await dependencyChain.AddDependenciesFromManifest(manifestLoader, installManifestB);
 
             dependencyChain.NeededDependencies.Count.ShouldBe(3);
-            dependencyChain.NeededDependencies.First().Version.ShouldBe(dependencyManifest2.SemanticVersion);
+            dependencyChain
+                .NeededDependencies.First()
+                .Version.ShouldBe(dependencyManifest2.SemanticVersion);
         }
 
         [Fact]
         public async Task GivenCircularDependency_WhenChainCalculated_ThenResolved()
         {
             var dependencyManifest1 = CreateTestManifest("dependency-a", 1, 0, 0);
-            var dependencyManifest2 = CreateTestManifest("dependency-b", 1, 0, 0, dependencyManifest1);
-            var dependencyManifest3 = CreateTestManifest("dependency-c", 1, 0, 0, dependencyManifest2);
-            dependencyManifest1.Dependencies = new List<Dependency> { dependencyManifest3.ToDependency() };
+            var dependencyManifest2 = CreateTestManifest(
+                "dependency-b",
+                1,
+                0,
+                0,
+                dependencyManifest1
+            );
+            var dependencyManifest3 = CreateTestManifest(
+                "dependency-c",
+                1,
+                0,
+                0,
+                dependencyManifest2
+            );
+            dependencyManifest1.Dependencies = new List<Dependency>
+            {
+                dependencyManifest3.ToDependency()
+            };
 
-            var manifestLoader = CreateMockManifestLoader(dependencyManifest1, dependencyManifest2, dependencyManifest3);
+            var manifestLoader = CreateMockManifestLoader(
+                dependencyManifest1,
+                dependencyManifest2,
+                dependencyManifest3
+            );
 
             var installManifestA = CreateTestManifest("to-install-a", 1, 0, 0, dependencyManifest3);
 
@@ -185,7 +234,9 @@ namespace FoundryGet.Models.Tests
             await dependencyChain.AddDependenciesFromManifest(manifestLoader, installManifestA);
 
             dependencyChain.NeededDependencies.Count.ShouldBe(3);
-            dependencyChain.NeededDependencies.First().Version.ShouldBe(dependencyManifest2.SemanticVersion);
+            dependencyChain
+                .NeededDependencies.First()
+                .Version.ShouldBe(dependencyManifest2.SemanticVersion);
         }
 
         [Fact]
@@ -196,16 +247,27 @@ namespace FoundryGet.Models.Tests
 
             var manifestLoader = CreateMockManifestLoader(dependencyManifest1, dependencyManifest2);
 
-            var alreadyInstalledManifest = CreateTestManifest("installed", 1, 0, 0, dependencyManifest1);
+            var alreadyInstalledManifest = CreateTestManifest(
+                "installed",
+                1,
+                0,
+                0,
+                dependencyManifest1
+            );
             var installManifest = CreateTestManifest("to-install", 1, 0, 0, dependencyManifest2);
 
             var dependencyChain = new DependencyChain();
 
-            await dependencyChain.AddDependenciesFromManifest(manifestLoader, alreadyInstalledManifest);
+            await dependencyChain.AddDependenciesFromManifest(
+                manifestLoader,
+                alreadyInstalledManifest
+            );
             await dependencyChain.AddDependenciesFromManifest(manifestLoader, installManifest);
 
             dependencyChain.NeededDependencies.Count.ShouldBe(1);
-            dependencyChain.NeededDependencies.First().Version.ShouldBe(dependencyManifest1.GetSemanticVersion());
+            dependencyChain
+                .NeededDependencies.First()
+                .Version.ShouldBe(dependencyManifest1.GetSemanticVersion());
         }
     }
 }

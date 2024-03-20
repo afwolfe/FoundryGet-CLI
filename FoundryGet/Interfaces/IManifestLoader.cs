@@ -1,6 +1,6 @@
-﻿using FoundryGet.Models;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using FoundryGet.Models;
 
 namespace FoundryGet.Interfaces
 {

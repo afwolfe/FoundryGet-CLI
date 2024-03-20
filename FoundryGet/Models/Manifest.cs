@@ -1,12 +1,11 @@
-﻿using FoundryGet.Interfaces;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace FoundryGet.Models
 {
@@ -49,9 +48,11 @@ namespace FoundryGet.Models
         [JsonProperty("download", NullValueHandling = NullValueHandling.Ignore)]
         public Uri DownloadUri { get; set; }
 
-        public bool IsSystem => ManifestUri.AbsoluteUri.EndsWith("system.json", StringComparison.OrdinalIgnoreCase);
+        public bool IsSystem =>
+            ManifestUri.AbsoluteUri.EndsWith("system.json", StringComparison.OrdinalIgnoreCase);
 
-        public bool IsModule => ManifestUri.AbsoluteUri.EndsWith("module.json", StringComparison.OrdinalIgnoreCase);
+        public bool IsModule =>
+            ManifestUri.AbsoluteUri.EndsWith("module.json", StringComparison.OrdinalIgnoreCase);
     }
 
     public partial class Manifest
@@ -60,19 +61,23 @@ namespace FoundryGet.Models
 
         public SemanticVersioning.Version GetSemanticVersion()
         {
-            if (SemanticVersion != null) return SemanticVersion;
-            else {
-                try {
+            if (SemanticVersion != null)
+                return SemanticVersion;
+            else
+            {
+                try
+                {
                     SemanticVersion = new SemanticVersioning.Version(Version, true);
                     return SemanticVersion;
-                } catch {
-                    Console.WriteLine($"{Version} did not appear to be a proper Semantic Version. Either ask the Module / System developer to update the 'version' or 'semanticVersion' field with a valid SemVer. Read more here: https://semver.org/");
+                }
+                catch
+                {
+                    Console.WriteLine(
+                        $"{Version} did not appear to be a proper Semantic Version. Either ask the Module / System developer to update the 'version' or 'semanticVersion' field with a valid SemVer. Read more here: https://semver.org/"
+                    );
                     return new SemanticVersioning.Version("0.0.0");
                 }
             }
-
-            
-            
         }
 
         public Dependency ToDependency()
@@ -89,11 +94,15 @@ namespace FoundryGet.Models
         {
             if (IsModule && IsSystem)
             {
-                Console.WriteLine("Detected this Manifest as both a System and a Module, which is impossible");
+                Console.WriteLine(
+                    "Detected this Manifest as both a System and a Module, which is impossible"
+                );
                 return 1;
             }
 
-            Console.WriteLine($"Installing {Name} version {GetSemanticVersion()} from {DownloadUri}");
+            Console.WriteLine(
+                $"Installing {Name} version {GetSemanticVersion()} from {DownloadUri}"
+            );
 
             var stream = await _httpClient.GetStreamAsync(DownloadUri);
             var zip = new ZipArchive(stream);
@@ -130,7 +139,11 @@ namespace FoundryGet.Models
             return 0;
         }
 
-        private static void ExtractZipToDestination(ZipArchive zip, string installationDestination, string manifestRelativePath)
+        private static void ExtractZipToDestination(
+            ZipArchive zip,
+            string installationDestination,
+            string manifestRelativePath
+        )
         {
             foreach (var entry in zip.Entries)
             {
@@ -142,15 +155,28 @@ namespace FoundryGet.Models
                     entryName = entryName.Replace(manifestRelativePath, "");
                 }
 
-                string fileDestinationPath = Path.GetFullPath(Path.Combine(installationDestination, entryName));
+                string fileDestinationPath = Path.GetFullPath(
+                    Path.Combine(installationDestination, entryName)
+                );
 
-                if (fileDestinationPath.Equals(installationDestination, StringComparison.Ordinal)) continue;
+                if (fileDestinationPath.Equals(installationDestination, StringComparison.Ordinal))
+                    continue;
 
                 // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
                 // are case-insensitive.
-                if (fileDestinationPath.StartsWith(installationDestination, StringComparison.Ordinal))
+                if (
+                    fileDestinationPath.StartsWith(
+                        installationDestination,
+                        StringComparison.Ordinal
+                    )
+                )
                 {
-                    if (fileDestinationPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                    if (
+                        fileDestinationPath.EndsWith(
+                            Path.DirectorySeparatorChar.ToString(),
+                            StringComparison.Ordinal
+                        )
+                    )
                     {
                         Directory.CreateDirectory(fileDestinationPath);
                     }
@@ -166,12 +192,18 @@ namespace FoundryGet.Models
         {
             if (IsModule)
             {
-                return dataFolder.ModulesFolder + Path.DirectorySeparatorChar + Name + Path.DirectorySeparatorChar;
+                return dataFolder.ModulesFolder
+                    + Path.DirectorySeparatorChar
+                    + Name
+                    + Path.DirectorySeparatorChar;
             }
-            
+
             if (IsSystem)
             {
-                return dataFolder.SystemsFolder + Path.DirectorySeparatorChar + Name + Path.DirectorySeparatorChar;
+                return dataFolder.SystemsFolder
+                    + Path.DirectorySeparatorChar
+                    + Name
+                    + Path.DirectorySeparatorChar;
             }
 
             return null;
