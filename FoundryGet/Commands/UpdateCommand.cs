@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FoundryGet.Interfaces;
 using FoundryGet.Models;
 using FoundryGet.Services;
+using FoundryGet.Utilities;
 using Microsoft.Extensions.CommandLineUtils;
 
 namespace FoundryGet.Commands
@@ -29,18 +30,9 @@ namespace FoundryGet.Commands
         {
             try
             {
-                FoundryDataFolder foundryDataFolder;
-                if (dataFolder.HasValue())
-                {
-                    foundryDataFolder = FoundryDataFolder.FromDirectoryPath(dataFolder.Value());
-                }
-                else
-                {
-                    foundryDataFolder = FoundryDataFolder.FromCurrentDirectory();
-                }
-
-                if (foundryDataFolder == null)
-                    return 1;
+                FoundryDataFolder foundryDataFolder = FoundryGetUtils.GetFoundryDataFolder(
+                    dataFolder
+                );
 
                 var manifestLoader = new ManifestLoader();
                 var manifestsToUpdate = new List<Manifest>();

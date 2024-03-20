@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FoundryGet.Models;
 using FoundryGet.Services;
+using FoundryGet.Utilities;
 using Microsoft.Extensions.CommandLineUtils;
 
 namespace FoundryGet.Commands
@@ -33,15 +34,9 @@ namespace FoundryGet.Commands
                     return 1;
                 }
 
-                FoundryDataFolder foundryDataFolder;
-                if (dataFolder.HasValue())
-                {
-                    foundryDataFolder = FoundryDataFolder.FromDirectoryPath(dataFolder.Value());
-                }
-                else
-                {
-                    foundryDataFolder = FoundryDataFolder.FromCurrentDirectory();
-                }
+                FoundryDataFolder foundryDataFolder = FoundryGetUtils.GetFoundryDataFolder(
+                    dataFolder
+                );
 
                 if (foundryDataFolder == null)
                     return 1;

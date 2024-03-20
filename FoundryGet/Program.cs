@@ -20,6 +20,7 @@ namespace FoundryGet
 
             app.Command("install", InstallCommand.Command);
             app.Command("update", UpdateCommand.Command);
+            app.Command("sync", SyncCommand.Command);
 
             app.Execute(args);
         }

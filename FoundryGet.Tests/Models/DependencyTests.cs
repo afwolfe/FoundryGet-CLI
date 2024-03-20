@@ -22,14 +22,10 @@ namespace FoundryGet.Models.Tests
             var dependency = new Dependency()
             {
                 Name = "test-package",
-                Version = new SemanticVersioning.Version(dependencyVersion)
+                RawVersion = dependencyVersion
             };
 
-            var manifest = new Manifest
-            {
-                Name = "test-package",
-                SemanticVersion = new SemanticVersioning.Version(installedVersion)
-            };
+            var manifest = new Manifest { Name = "test-package", Version = installedVersion };
 
             dependency.IsSatisfiedBy(manifest).ShouldBe(shouldBeSatisfied);
         }
@@ -50,13 +46,13 @@ namespace FoundryGet.Models.Tests
             var dependency = new Dependency()
             {
                 Name = "test-package",
-                Version = new SemanticVersioning.Version(dependencyVersion)
+                RawVersion = dependencyVersion
             };
 
             var dependency2 = new Dependency()
             {
                 Name = "test-package",
-                Version = new SemanticVersioning.Version(installedVersion)
+                RawVersion = installedVersion
             };
 
             dependency.IsSatisfiedBy(dependency2).ShouldBe(shouldBeSatisfied);

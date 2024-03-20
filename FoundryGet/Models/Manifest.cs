@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -85,9 +86,32 @@ namespace FoundryGet.Models
             return new Dependency
             {
                 Name = Name,
-                Version = GetSemanticVersion(),
+                RawVersion = Version,
+                // Version = GetSemanticVersion(),
                 ManifestUri = ManifestUri
             };
+        }
+
+        public async Task<int> InstallExactVersion(
+            FoundryDataFolder dataFolder,
+            string versionOverride
+        )
+        {
+            Console.WriteLine(
+                $"Overriding DownloadUri version from {Version} to {versionOverride}"
+            );
+
+            DownloadUri = new Uri(
+                Regex.Replace(
+                    DownloadUri.AbsoluteUri,
+                    $"/download/{Version}",
+                    $"/download/{versionOverride}"
+                )
+            );
+            Version = versionOverride;
+
+            Console.WriteLine(DownloadUri.AbsoluteUri, Version);
+            return await Install(dataFolder);
         }
 
         public async Task<int> Install(FoundryDataFolder dataFolder)
