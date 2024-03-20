@@ -1,7 +1,5 @@
 ﻿using FoundryGet.Interfaces;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using NuGet.Versioning;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -19,7 +17,7 @@ namespace FoundryGet.Models
 
         [JsonProperty("version")]
         [JsonConverter(typeof(SemanticVersionConverter))]
-        public SemanticVersion Version { get; set; }
+        public SemanticVersioning.Version Version { get; set; }
 
         public bool IsSatisfiedBy(Manifest manifest)
         {

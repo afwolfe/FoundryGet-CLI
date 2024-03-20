@@ -1,6 +1,5 @@
 ﻿using FoundryGet.Interfaces;
 using Newtonsoft.Json;
-using NuGet.Versioning;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,7 +23,7 @@ namespace FoundryGet.Models
 
         [JsonProperty("semanticVersion", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(SemanticVersionConverter))]
-        public SemanticVersion SemanticVersion { get; set; }
+        public SemanticVersioning.Version SemanticVersion { get; set; }
 
         [JsonProperty("dependencies", NullValueHandling = NullValueHandling.Ignore)]
         public List<Dependency> Dependencies { get; set; } = new List<Dependency>();
@@ -59,17 +58,21 @@ namespace FoundryGet.Models
     {
         private HttpClient _httpClient = new HttpClient();
 
-        public SemanticVersion GetSemanticVersion()
+        public SemanticVersioning.Version GetSemanticVersion()
         {
             if (SemanticVersion != null) return SemanticVersion;
-
-            if (SemanticVersion.TryParse(Version, out var semanticVersion))
-            {
-                return semanticVersion;
+            else {
+                try {
+                    SemanticVersion = new SemanticVersioning.Version(Version, true);
+                    return SemanticVersion;
+                } catch {
+                    Console.WriteLine($"{Version} did not appear to be a proper Semantic Version. Either ask the Module / System developer to update the 'version' or 'semanticVersion' field with a valid SemVer. Read more here: https://semver.org/");
+                    return new SemanticVersioning.Version("0.0.0");
+                }
             }
 
-            Console.WriteLine($"{Version} did not appear to be a proper Semantic Version. Either ask the Module / System developer to update the 'version' or 'semanticVersion' field with a valid SemVer. Read more here: https://semver.org/");
-            return null;
+            
+            
         }
 
         public Dependency ToDependency()
@@ -90,7 +93,7 @@ namespace FoundryGet.Models
                 return 1;
             }
 
-            Console.WriteLine($"Installing {Name} version {GetSemanticVersion().ToNormalizedString()} from {DownloadUri}");
+            Console.WriteLine($"Installing {Name} version {GetSemanticVersion()} from {DownloadUri}");
 
             var stream = await _httpClient.GetStreamAsync(DownloadUri);
             var zip = new ZipArchive(stream);

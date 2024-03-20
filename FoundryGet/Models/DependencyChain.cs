@@ -33,16 +33,16 @@ namespace FoundryGet.Models
                 {
                     if (existingNeededDependency.Version.Major != dependency.Version.Major)
                     {
-                        Console.WriteLine($"Dependency on {dependency.Name} version {dependency.Version.ToNormalizedString()} is incompatible with dependency on Version {existingNeededDependency.Version.ToNormalizedString()}");
+                        Console.WriteLine($"Dependency on {dependency.Name} version {dependency.Version} is incompatible with dependency on Version {existingNeededDependency.Version}");
                         throw new Exception("Incompatible dependency chain");
                     }
                     if (existingNeededDependency.Version > dependency.Version)
                     {
-                        Console.WriteLine($"Dependency on {dependency.Name} version {dependency.Version.ToNormalizedString()} is already satisfied by Version {existingNeededDependency.Version.ToNormalizedString()}");
+                        Console.WriteLine($"Dependency on {dependency.Name} version {dependency.Version} is already satisfied by Version {existingNeededDependency.Version}");
                     }
                     else
                     {
-                        Console.WriteLine($"Upgrading dependency on {dependency.Name} version {existingNeededDependency.Version.ToNormalizedString()} to Version {dependency.Version.ToNormalizedString()}");
+                        Console.WriteLine($"Upgrading dependency on {dependency.Name} version {existingNeededDependency.Version} to Version {dependency.Version}");
                         NeededDependencies.Remove(existingNeededDependency);
                         NeededDependencies.Add(dependency);
                     }
@@ -51,16 +51,16 @@ namespace FoundryGet.Models
                 {
                     if (existingInstalledDependency.Version.Major != dependency.Version.Major)
                     {
-                        Console.WriteLine($"Dependency on {dependency.Name} version {dependency.Version.ToNormalizedString()} is incompatible with dependency on Version {existingInstalledDependency.Version.ToNormalizedString()}");
+                        Console.WriteLine($"Dependency on {dependency.Name} version {dependency.Version} is incompatible with dependency on Version {existingInstalledDependency.Version}");
                         throw new Exception("Incompatible dependency chain");
                     }
                     if (existingInstalledDependency.Version > dependency.Version)
                     {
-                        Console.WriteLine($"Dependency on {dependency.Name} version {dependency.Version.ToNormalizedString()} is already satisfied by Version {existingInstalledDependency.Version.ToNormalizedString()}");
+                        Console.WriteLine($"Dependency on {dependency.Name} version {dependency.Version} is already satisfied by Version {existingInstalledDependency.Version}");
                     }
                     else
                     {
-                        Console.WriteLine($"Upgrading dependency on {dependency.Name} version {existingInstalledDependency.Version.ToNormalizedString()} to Version {dependency.Version.ToNormalizedString()}");
+                        Console.WriteLine($"Upgrading dependency on {dependency.Name} version {existingInstalledDependency.Version} to Version {dependency.Version}");
                         InstalledDependencies.Remove(existingInstalledDependency);
                         NeededDependencies.Add(dependency);
                     }

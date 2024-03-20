@@ -1,6 +1,4 @@
-﻿using FoundryGet.Models;
-using Newtonsoft.Json;
-using NuGet.Versioning;
+﻿using Newtonsoft.Json;
 using Shouldly;
 using Xunit;
 
@@ -22,13 +20,13 @@ namespace FoundryGet.Models.Tests
             var dependency = new Dependency()
             {
                 Name = "test-package",
-                Version = SemanticVersion.Parse(dependencyVersion)
+                Version = new SemanticVersioning.Version(dependencyVersion)
             };
 
             var manifest = new Manifest
             {
                 Name = "test-package",
-                SemanticVersion = SemanticVersion.Parse(installedVersion)
+                SemanticVersion = new SemanticVersioning.Version(installedVersion)
             };
 
             dependency.IsSatisfiedBy(manifest).ShouldBe(shouldBeSatisfied);
@@ -48,13 +46,13 @@ namespace FoundryGet.Models.Tests
             var dependency = new Dependency()
             {
                 Name = "test-package",
-                Version = SemanticVersion.Parse(dependencyVersion)
+                Version = new SemanticVersioning.Version(dependencyVersion)
             };
 
             var dependency2 = new Dependency()
             {
                 Name = "test-package",
-                Version = SemanticVersion.Parse(installedVersion)
+                Version = new SemanticVersioning.Version(installedVersion)
             };
 
             dependency.IsSatisfiedBy(dependency2).ShouldBe(shouldBeSatisfied);
@@ -72,7 +70,7 @@ namespace FoundryGet.Models.Tests
                 dependency.ShouldNotBeNull();
                 dependency.Name.ShouldBe("archmage");
                 dependency.ManifestUri.ShouldBe(new System.Uri("https://gitlab.com/asacolips-projects/foundry-mods/archmage/-/raw/1.5.0/system.json"));
-                dependency.Version.ShouldBe(new SemanticVersion(1, 5, 0));
+                dependency.Version.ShouldBe(new SemanticVersioning.Version(1, 5, 0));
             });
         }
     }

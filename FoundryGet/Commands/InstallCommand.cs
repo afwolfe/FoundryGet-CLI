@@ -59,12 +59,11 @@ namespace FoundryGet.Commands
 
                 foreach (var dependency in dependencyChain.NeededDependencies)
                 {
-                    Console.WriteLine();
+                    Console.WriteLine(dependency.Name);
                     var dependencyManifest = await dependency.GetFullManifest(manifestLoader);
                     await dependencyManifest.Install(foundryDataFolder);
                 }
 
-                Console.WriteLine();
                 return await manifest.Install(foundryDataFolder);
             }
             catch (Exception e)

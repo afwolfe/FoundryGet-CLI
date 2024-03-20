@@ -1,6 +1,5 @@
 ﻿using FoundryGet.Interfaces;
 using Moq;
-using NuGet.Versioning;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -28,7 +27,7 @@ namespace FoundryGet.Models.Tests
             var manifest = new Manifest()
             {
                 Name = name,
-                SemanticVersion = new SemanticVersion(major, minor, patch),
+                SemanticVersion = new SemanticVersioning.Version(major, minor, patch),
                 ManifestUri = new Uri("http://fake.com/" + name)
             };
 

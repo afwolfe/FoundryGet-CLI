@@ -50,7 +50,7 @@ namespace FoundryGet.Commands
 
                     if (latestManifest.GetSemanticVersion() > manifest.GetSemanticVersion())
                     {
-                        Console.WriteLine($"Queuing update for {latestManifest.Name} from {manifest.GetSemanticVersion().ToNormalizedString()} to {latestManifest.GetSemanticVersion().ToNormalizedString()}");
+                        Console.WriteLine($"Queuing update for {latestManifest.Name} from {manifest.GetSemanticVersion()} to {latestManifest.GetSemanticVersion()}");
                         manifestsToUpdate.Add(latestManifest);
                     }
                 }
