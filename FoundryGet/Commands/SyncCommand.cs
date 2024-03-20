@@ -3,8 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FoundryGet.Models;
-using FoundryGet.Services;
-using FoundryGet.Utilities;
 using Microsoft.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
 
@@ -40,7 +38,7 @@ namespace FoundryGet.Commands
                     return 1;
                 }
 
-                FoundryDataFolder foundryDataFolder = FoundryGetUtils.GetFoundryDataFolder(
+                FoundryDataFolder foundryDataFolder = FoundryDataFolder.GetFoundryDataFolder(
                     dataFolder
                 );
                 if (foundryDataFolder == null)

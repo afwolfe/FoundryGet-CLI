@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FoundryGet.Interfaces;
 using FoundryGet.Models;
 using FoundryGet.Services;
-using FoundryGet.Utilities;
 using Microsoft.Extensions.CommandLineUtils;
 
 namespace FoundryGet.Commands
@@ -30,7 +29,7 @@ namespace FoundryGet.Commands
         {
             try
             {
-                FoundryDataFolder foundryDataFolder = FoundryGetUtils.GetFoundryDataFolder(
+                FoundryDataFolder foundryDataFolder = FoundryDataFolder.GetFoundryDataFolder(
                     dataFolder
                 );
 

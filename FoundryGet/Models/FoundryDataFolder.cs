@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using FoundryGet.Interfaces;
+using Microsoft.Extensions.CommandLineUtils;
 
 namespace FoundryGet.Models
 {
@@ -68,7 +69,21 @@ namespace FoundryGet.Models
             }
         }
 
-        public static FoundryDataFolder FromCurrentDirectory()
+        public static FoundryDataFolder GetFoundryDataFolder(CommandOption dataFolder)
+        {
+            if (dataFolder.HasValue())
+            {
+                return FromDirectoryPath(dataFolder.Value());
+            }
+            else
+            {
+                return FromCurrentDirectory();
+            }
+
+            throw new FileNotFoundException("Unable to determine FoundryDataFolder");
+        }
+
+        private static FoundryDataFolder FromCurrentDirectory()
         {
             var currentDirectory = Directory.GetCurrentDirectory();
             Console.WriteLine("Currently in " + currentDirectory);
@@ -81,7 +96,7 @@ namespace FoundryGet.Models
             return FromDirectoryPath(currentDirectory);
         }
 
-        public static FoundryDataFolder FromDirectoryPath(string path)
+        private static FoundryDataFolder FromDirectoryPath(string path)
         {
             if (!path.Contains("Data", StringComparison.Ordinal))
             {
