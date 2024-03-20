@@ -25,10 +25,20 @@ namespace FoundryGet.Commands
                 CommandOptionType.SingleValue
             );
 
-            command.OnExecute(async () => await Execute(configPath, dataFolder));
+            var generateLockFile = command.Option(
+                "-l|--lock",
+                "Generate a lock file from the environment, with absolute download URLs",
+                CommandOptionType.NoValue
+            );
+
+            command.OnExecute(async () => await Execute(configPath, dataFolder, generateLockFile));
         }
 
-        private static async Task<int> Execute(CommandArgument configPath, CommandOption dataFolder)
+        private static async Task<int> Execute(
+            CommandArgument configPath,
+            CommandOption dataFolder,
+            CommandOption generateLockfile
+        )
         {
             try
             {
@@ -51,7 +61,10 @@ namespace FoundryGet.Commands
                     json
                 );
 
-                var results = await copyEnvironmentConfig.InstallAll(foundryDataFolder);
+                var results = await copyEnvironmentConfig.InstallAll(
+                    foundryDataFolder,
+                    generateLockfile.HasValue()
+                );
                 if (results.Contains(1))
                 {
                     return 1;

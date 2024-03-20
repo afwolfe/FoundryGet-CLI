@@ -15,7 +15,6 @@ namespace FoundryGet.Commands
             command.Description = "Update modules";
             command.HelpOption("-?|-h|--help");
 
-            //var url = command.Argument("[url]", "The manifest URL of the module");
             var dataFolder = command.Option(
                 "-d|--dataFolder",
                 "The Foundry Data folder to install in, such as C:\\Users\\Me\\AppData\\Local\\FoundryVTT\\Data",

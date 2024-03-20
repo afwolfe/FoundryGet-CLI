@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -93,7 +94,8 @@ namespace FoundryGet.Models
 
         public async Task<int> InstallExactVersion(
             FoundryDataFolder dataFolder,
-            string versionOverride
+            string versionOverride,
+            List<string> uris
         )
         {
             Console.WriteLine(
@@ -110,6 +112,7 @@ namespace FoundryGet.Models
             Version = versionOverride;
 
             Console.WriteLine(DownloadUri.AbsoluteUri, Version);
+            uris.Add(DownloadUri.AbsoluteUri);
             return await Install(dataFolder);
         }
 
